@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI-Based Smart Traffic Monitoring System</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+        <div class="demo-bar">DEMO / SIMULATION - this prototype does not issue legal challans</div>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-mark"></div>
+            <div>
+                <h1>AI-Based Smart Traffic Monitoring System</h1>
+                <p>Real-time vehicle detection, density analysis and adaptive signal control</p>
+            </div>
+        </div>
+        <div class="top-info">
+            <span id="conn" class="badge badge-wait">Connecting ...</span>
+            <span id="fps" class="muted">-- FPS</span>
+            <span id="videoTime" class="muted"></span>
+        </div>
+    </header>
+
+    <div id="emergencyBanner" class="banner hidden">
+        <strong>EMERGENCY VEHICLE</strong> <span id="bannerText"></span>
+    </div>
+
+    <main class="layout">
+        <section class="panel">
+            <h2>Live traffic feed</h2>
+                <div class="feed-box">
+                    <img id="feed" src="/video_feed" alt="Live annotated traffic video">
+                </div>
+                <p class="sub feed-note">CPU-only mode: every frame is analysed, so the video plays slower than real time.</p>
+        </section>
+
+        <div class="right">
+            <div class="cards">
+
+                <article class="card">
+                    <h3>Vehicles</h3>
+                    <div class="big" id="vTotal">0</div>
+                    <div class="sub">counted at the line</div>
+                    <div class="row"><span>In view now</span><b id="vLive">0</b></div>
+                    <div class="row"><span>Direction</span><b id="vDir">0 up / 0 down</b></div>
+                    <div id="typeBars" class="bars"></div>
+                </article>
+
+                <article class="card">
+                    <h3>Traffic density</h3>
+                    <span id="dStatus" class="chip chip-low">Low</span>
+                    <div class="gauge">
+                        <div class="gauge-fill" id="gFill"></div>
+                        <span class="mark" id="markLow"></span>
+                        <span class="mark" id="markHigh"></span>
+                    </div>
+                    <div class="sub" id="dValue">Road occupancy 0%</div>
+                    <div class="row"><span>Vehicles in monitored zone</span><b id="dRoi">0</b></div>
+                </article>
+
+                <article class="card">
+                    <h3>Traffic signal</h3>
+                    <div class="signal">
+                        <div class="light"><i id="lampR"></i><i id="lampY"></i><i id="lampG"></i></div>
+                        <div>
+                            <div class="big" id="sCount">--</div>
+                            <div class="sub" id="sPhase">--</div>
+                        </div>
+                    </div>
+                    <div class="row"><span>Next green</span><b id="sNext">--</b></div>
+                    <div id="sPriority" class="tag tag-priority hidden"></div>
+                    <div id="sScale" class="sub"></div>
+                </article>
+
+                <article class="card">
+                    <h3>Emergency vehicles</h3>
+                    <div id="emState" class="state state-ok">No emergency vehicle</div>
+                    <ul id="emList" class="plain"></ul>
+                    <button id="simBtn" class="btn">Simulate emergency vehicle</button>
+                    <div class="sub">The button simulates a vehicle to demonstrate signal priority.</div>
+                </article>
+
+                <article class="card">
+                    <h3>Violations</h3>
+                    <div class="big" id="vioTotal">0</div>
+                    <div id="vioList" class="sub">No violations detected</div>
+                </article>
+
+            </div>
+
+            <div class="lower">
+                <section class="panel">
+                    <h2>Recent alerts</h2>
+                    <ul id="events"></ul>
+                </section>
+                <section class="panel">
+                    <h2>Traffic density, last 2 minutes</h2>
+                    <canvas id="chart"></canvas>
+                </section>
+            </div>
+
+                        <section class="panel" id="challanPanel">
+                            <div class="history-head">
+                                <h2>Demo e-challans (simulation, no legal value)</h2>
+                                <div class="downloads">
+                                    <select id="simType">
+                                        <option value="red_light">Red light</option>
+                                        <option value="over_speed">Over-speeding</option>
+                                        <option value="no_helmet">No helmet</option>
+                                        <option value="seat_belt">No seat belt</option>
+                                        <option value="mobile_phone">Mobile phone use</option>
+                                    </select>
+                                    <button id="simViolationBtn" class="btn">Simulate violation</button>
+                                    <a class="btn-link" href="/api/export/challans.csv">Download challans (CSV)</a>
+                                </div>
+                            </div>
+                            <p class="sub">Wrong-way and stopped vehicles are detected by the program (DETECTED). The other types are triggered
+                                with the button (SIMULATED). Plates are sample plates and amounts are sample amounts.</p>
+                            <div class="table-wrap">
+                                <table id="cTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Time</th>
+                                            <th>Violation</th>
+                                            <th>Source</th>
+                                            <th>Vehicle</th>
+                                            <th>Amount</th>
+                                            <th>Files</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </section>
+
+            <section class="panel history">
+                <div class="history-head">
+                    <h2>History and statistics (stored in the database)</h2>
+                    <div class="downloads">
+                        <a class="btn-link" href="/api/export/stats.csv">Download statistics (CSV)</a>
+                        <a class="btn-link" href="/api/export/events.csv">Download alerts (CSV)</a>
+                    </div>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat"><span id="hSamples">0</span><small>records stored</small></div>
+                    <div class="stat"><span id="hCounted">0</span><small>vehicles counted (all rounds)</small></div>
+                    <div class="stat"><span id="hAvgOcc">0%</span><small>average road occupancy</small></div>
+                    <div class="stat"><span id="hPeak">0</span><small>most vehicles in view</small></div>
+                    <div class="stat"><span id="hEvents">0</span><small>alerts stored</small></div>
+                </div>
+
+                <div class="share" id="hShare"></div>
+                <div class="share-legend" id="hLegend"></div>
+
+                <h3>Latest stored records</h3>
+                <div class="table-wrap">
+                    <table id="hTable">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>In view</th>
+                                <th>Counted</th>
+                                <th>Density</th>
+                                <th>Signal</th>
+                                <th>Emergency</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>PBL project - built with Python, YOLO, OpenCV and Flask</footer>
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

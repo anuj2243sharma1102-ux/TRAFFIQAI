@@ -1,0 +1,37 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Large files and results
+*.pt
+*.onnx
+videos/*
+!videos/.gitkeep
+output/*
+!output/.gitkeep
+models/*
+!models/.gitkeep
+
+# Own trained models (small enough for GitHub)
+!models/emergency2.pt
+!models/vehicle_type.pt
+
+# Database and logs
+*.db
+*.sqlite3
+*.log
+
+# Datasets, archives
+datasets/
+*.zip
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

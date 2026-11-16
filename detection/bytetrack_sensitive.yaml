@@ -1,0 +1,9 @@
+# ByteTrack settings that also start tracks for weaker detections
+# (the Ultralytics default is 0.25 for track_high_thresh and new_track_thresh)
+tracker_type: bytetrack
+track_high_thresh: 0.2
+track_low_thresh: 0.1
+new_track_thresh: 0.2
+track_buffer: 30
+match_thresh: 0.8
+fuse_score: True
