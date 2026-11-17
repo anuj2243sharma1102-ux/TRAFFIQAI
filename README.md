@@ -111,5 +111,5 @@ and amounts are sample amounts (`DEMO_FINES` in `config.py`). The PDFs carry a D
 ## Credits
 
 Ultralytics YOLOv8, ByteTrack, OpenCV, Flask, ReportLab.
-Test video: "<clip title>" by <creator name> on Pexels (<page link>), used under the Pexels License.
+Test video: footage by Javed Shaikh on Pexels (https://www.pexels.com), used under the Pexels License.
 The video is not included in this repository.
