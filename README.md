@@ -1,4 +1,4 @@
-# AI-Based Smart Traffic Monitoring System
+# TRAFFIQ AI - AI-Based Smart Traffic Monitoring And Management System
 
 A college PBL project: a computer-vision prototype that watches a fixed traffic camera video,
 counts vehicles, measures how full the road is, adapts a simulated traffic signal, gives priority
